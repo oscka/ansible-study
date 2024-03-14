@@ -1,0 +1,13 @@
+---
+
+  
+## bash shell 일때 
+
+
+
+- name: "[post] install dev-tools 폴더 삭제"
+  file:   
+    path: "{{ INSTALL_DOWN_ROOT }}"
+    state: absent
+  tags: post
+  when: ansible_os_family == 'Debian'

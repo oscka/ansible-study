@@ -1,0 +1,44 @@
+---
+# defaults file for test-role
+
+
+HOSTS: "vms"
+HOST_IP: "{{ansible_host}}"
+
+INSTALL_DOWN_ROOT: /home/{{ ansible_user }}/dev-tools
+LOCAL_USER_HOME: "/Users/blackstar"
+KUBE_CONFIG_PATH: "{{LOCAL_USER_HOME}}/.kube/config"
+
+#### tools ###
+
+K9S_VERSION: v0.25.21 
+
+USER_NAME: "{{ ansible_user }}"
+
+### k8s-apps ###
+
+########## 공통 #################
+## helm repo update
+HELM_UPDATE_REPO_CACHE: false
+
+
+
+########## glb_ingress_namespace #################
+GLB_INGRESS_NAMESPACE: "ingress-nginx"
+
+########## ingress-nginx #################
+INGRESS_NGINX_NAMESPACE: ingress-nginx
+INGRESS_NGINX_CHART: "ingress-nginx/ingress-nginx"
+INGRESS_NGINX_CHART_VERSION: "4.2.0" 
+INGRESS_NGINX_ENABLE_SSLPASSTHROUGH: "Y"
+
+
+########## argocd #################
+ARGOCD_INGRESS_CLASS: "nginx"  ## ingress (default=nginx)
+ARGOCD_HOST: "argocd.{{HOST_IP}}.sslip.io"  ## argocd server host (default=argocd.127.0.0.1.sslip.io)
+ARGOCD_NEW_PASSWORD: "admin1234" ## argocd admin password(default=admin1234)
+ARGO_ROLLOUTS_YN: "N"    ## argo rollouts 설치 여부(default=N)
+ARGOCD_INGRESS_YN: "Y"
+
+
+SIMPLE_FE_ING: "simple-fe.{{HOST_IP}}.sslip.io"

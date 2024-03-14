@@ -1,0 +1,51 @@
+---
+######## k3s #########
+
+- name: k3s 설치 
+  shell: |
+   
+    curl -sfL https://get.k3s.io |  sh -s - --write-kubeconfig-mode=644  --tls-san={{HOST_IP}} --disable=traefik 
+  register: output
+  tags: 
+    - k3s
+
+- debug:
+    var: output
+  tags: 
+    - k3s
+
+- name: "k3s kubeconfig set"
+  shell: |
+    mkdir -p ~/.kube
+    cp /etc/rancher/k3s/k3s.yaml ~/.kube/config
+    sleep 30
+    kubectl wait pod --timeout=-1s --for=condition=Ready -l '!job-name' -n kube-system
+  tags:   
+    - k3s-kubeconfig
+    - k3s
+
+- name: "k3s fetch remote kubeconfig"
+  ansible.builtin.fetch:
+    src: "/etc/rancher/k3s/k3s.yaml"
+    dest: "{{LOCAL_USER_HOME}}/.kube/config"
+    flat: yes
+  tags: 
+    - k3s-kubeconfig
+    - k3s
+
+- name: "kubeconfig remote.ip replace"
+  local_action: shell
+    sed -i '' 's/127.0.0.1/{{ansible_host}}/' {{LOCAL_USER_HOME}}/.kube/config
+  tags: 
+    - k3s-kubeconfig
+    - k3s
+
+- name: "k3s   master delete"
+  shell: |
+    k3s-uninstall.sh    
+  tags: 
+    - k3s-delete
+
+
+
+

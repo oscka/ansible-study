@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: simple-fe-ingress
+  namespace: fe
+    
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: "{{SIMPLE_FE_ING}}"
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service: 
+            name: simple-fe-svc
+            port: 
+              number: 8080

@@ -1,0 +1,22 @@
+---
+
+
+
+
+
+- name: k9s 설치
+  shell: |   
+    curl -sL https://github.com/derailed/k9s/releases/download/{{K9S_VERSION}}/k9s_Linux_x86_64.tar.gz | sudo tar xfz - -C /usr/local/bin k9s
+  tags: 
+    - k9s 
+    - k8s-basic
+
+- name: Add kubectl completion to /home/{{ ansible_user }}/.bashrc
+  lineinfile:
+    path: /home/{{ ansible_user }}/.bashrc
+    line: |
+      alias k=kubectl
+    mode: 0644
+  tags: 
+    - alias 
+    - k8s-basic

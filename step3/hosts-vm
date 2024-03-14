@@ -1,0 +1,4 @@
+[vms]
+study-vm ansible_host=192.168.41.30 ansible_user=vagrant ansible_port=22 ansible_ssh_private_key_file=/Users/blackstar/dev/workspace/vscode/tools-work/ansible/austine-playbooks/vagrant-vm/keys/study-vm.key
+study-vm2 ansible_host=192.168.41.31 ansible_user=vagrant ansible_port=22 ansible_ssh_private_key_file=/Users/blackstar/dev/workspace/vscode/tools-work/ansible/austine-playbooks/vagrant-vm/keys/study-vm2.key
+

@@ -1,0 +1,47 @@
+- name: My first play
+  hosts: vms
+  tasks:
+  
+  - name: "[pre] apt update"
+    apt:
+      update_cache: yes
+    become: true
+    tags: 
+      - pre
+     
+  - name: "docker 설치"
+    shell: |  
+      curl -fsSL https://get.docker.com/ | sudo sh 
+      sudo usermod -a -G docker {{ansible_user}}
+    tags: 
+      - docker 
+      - k8s-basic
+
+  - name: Start docker 
+    service:
+      name: docker
+      state: restarted
+    become: true
+    tags: 
+      - docker
+      - k8s-basic
+
+  - name: reset ssh connection to allow user changes to affect 'current login user'
+    meta: reset_connection
+    tags: 
+      - docker
+      - k8s-basic
+
+  - name: "kubectl 설치"
+    shell: |
+      curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+      sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl 
+    tags: 
+      - kubectl
+      - k8s-basic
+  - name: k9s 설치
+    shell: |   
+      curl -sL https://github.com/derailed/k9s/releases/download/v0.25.21/k9s_Linux_x86_64.tar.gz | sudo tar xfz - -C /usr/local/bin k9s
+    tags: 
+      - k9s 
+      - k8s-basic

@@ -1,0 +1,13 @@
+- name: "My first play []"
+  hosts: all  ## all, 
+  tasks:
+  
+  - name: "[pre] apt update"
+    apt:
+      update_cache: yes
+    become: true
+
+  - name: "kubectl 설치"
+    shell: |
+      curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+      sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl 
