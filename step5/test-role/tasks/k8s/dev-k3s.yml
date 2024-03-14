@@ -1,9 +1,7 @@
 ---
 ######## k3s #########
-
 - name: k3s 설치 
-  shell: |
-   
+  shell: | 
     curl -sfL https://get.k3s.io |  sh -s - --write-kubeconfig-mode=644  --tls-san={{HOST_IP}} --disable=traefik 
   register: output
   tags: 
