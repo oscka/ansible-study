@@ -26,3 +26,24 @@ sudo 명령 수행시 비밀번호 없이 접속하기
 # ssh키 등록
 (작성중)
 ```
+
+vagrant파일 샘플
+```
+VMHOSTNAME="test-vm1"
+VMIP="192.168.56.10"
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "ubuntu/focal64"
+  config.vm.hostname = VMHOSTNAME
+  config.vm.network :private_network, ip: VMIP 
+  # config.vm.network "forwarded_port", guest: 80, host: 8080, host_ip: "127.0.0.1"
+
+  config.vm.provider "virtualbox" do |vb|
+  #   # Display the VirtualBox GUI when booting the machine
+      vb.gui = false
+      vb.name = VMHOSTNAME
+      vb.cpus = 2 
+      vb.memory = "2040"
+  end
+end
+```
