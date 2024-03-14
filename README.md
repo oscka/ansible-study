@@ -13,6 +13,8 @@ vagrant로 구동한 경우 기본적으로 vagrant 계정으로 sudo 권한으�
 비밀번호 없이 SSH로 접속하기
 
 ```zsh
+# 키 생성(~/.ssh 하위에 생성됨)
+ssh-keygen -t rsa
 # ssh키 등록
 ssh-copy-id -i ~/.ssh/id_rsa.pub vagrant@192.168.0.xxx
 # 접속 확인
