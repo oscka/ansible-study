@@ -23,6 +23,17 @@ ssh vagrant@192.168.0.xxx
 ansible -i hosts-vm all -m ping
 ```
 
+ssh로 접속시 접속이 안될 경우(permission denieded오류)
+
+```zsh
+# 다음 파일의 내용을 수정(PasswordAuthentication항목을 yes로 수정)
+vi /etc/ssh/sshd_config
+# 이후 ssh데몬을 재기동
+sudo service ssh restart
+# 다른 서버에서 해당 서버로 password로 ssh접근이 되는지 확인
+ssh vagrant@192.168.0.xxx
+```
+
 sudo 명령 수행시 비밀번호 없이 접속하기
 ```zsh
 # ssh키 등록
