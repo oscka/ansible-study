@@ -43,9 +43,13 @@ ssh vagrant@192.168.0.xxx
 
 ### sudo 명령 수행시 비밀번호 없이 접속하기
 
+ansible을 통해 시스템에 설치 등의 작업을 수행하기 위해 sudo 권한이 필요하며 ubuntu에서는 다음과 같이 권한을 준다.
+
 ```zsh
-# ssh키 등록
-(작성중)
+# /etc/sudoers 파일 맨아래에 다음 내용을 추가
+- (사용자명) ALL=NOPASSWD: ALL
+# 또는 echo 명령어를 사용하여 추가할 수 있습니다.
+- echo '(사용자명) ALL=NOPASSWD: ALL' >> /etc/sudoers
 ```
 
 ### vagrant파일 샘플
