@@ -1,7 +1,13 @@
 # ansible-study
-2024.03.14 ansible study(남궁상무님) - 교육 진행한 내용입니다.
+2024.03에 진행한 ansible study(남궁상무님) - 교육 진행한 내용입니다.
 
-## 로컬 테스트
+7개의 handson step으로 이루어져 있으며, 1~6단계는 VM하나를 대상으로 각각의 k8s 솔루션 및 환경들을 설치하고 7단계에서는 6개의 VM(1lb,3master,2worker)에 rancher cluster를 설치한다.
+
+아래의 실행가이드와 트러블슈팅을 참고하며, 각 step에 있는 z-guide를 참고하여 실행할 수 있다.
+
+실행을 위해서는 다소의 준비가 필요하다.
+
+## 실행 준비하기
 
 로컬 테스트를 위해 다음과 같은 사항이 필요합니다.
 - Vagrant, VirtualBox(KVM,Hyper-V 등등) 기반의 2개 가상머진(VM) 구동 필요
