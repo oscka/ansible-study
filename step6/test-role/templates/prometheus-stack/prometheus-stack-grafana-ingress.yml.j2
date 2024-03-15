@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name:  grafana-ingress
+  namespace: {{PROMETHEUS_STACK_NAMESPACE}}
+  annotations:
+    kubernetes.io/ingress.class: {{PROMETHEUS_STACK_INGRESS_CLASS}}    
+spec:
+  rules:
+  - host: {{PROMETHEUS_STACK_GRAFNA_INGRESS_HOST}}
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service: 
+            name: prometheus-grafana
+            port: 
+              number: 80

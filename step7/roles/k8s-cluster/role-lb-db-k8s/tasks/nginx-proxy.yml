@@ -1,0 +1,65 @@
+---
+
+- name:  Create nginx-proxy  directory if it does not exist
+  file:
+    path: "{{ component.INSTALL_ROOT }}/docker/nginx-proxy"
+    state: directory
+  tags: 
+    - nginx-lb4-k8s-config-upload
+    - nginx-lb4-k8s  
+    - rke2-cluster-multi
+  when: LB_TYPE == 'nginx' and "'lb' in group_names"
+
+- name: nginx-proxy-config upload 업로드
+  template:
+    src: nginx-proxy/nginx-proxy-config.yml.j2
+    dest: "{{ component.INSTALL_ROOT }}/docker/nginx-proxy/nginx-proxy-config.conf"
+  tags: 
+    - nginx-lb4-k8s-config-upload
+    - nginx-lb4-k8s
+    - rke2-cluster-multi
+  when: LB_TYPE == 'nginx' and "'lb' in group_names"
+
+- name: nginx-proxy docker-compose upload
+  template:
+    src: nginx-proxy/nginx-proxy-docker-compose.yml.j2
+    dest: "{{ component.INSTALL_ROOT }}/docker/nginx-proxy/docker-compose.yml"
+  register: output
+  tags: 
+    - nginx-lb4-k8s
+    - rke2-cluster-multi
+  when: LB_TYPE == 'nginx' and "'lb' in group_names"
+
+
+
+- name: nginx-lb4-k8s container 설치  
+  community.docker.docker_compose:    
+    project_src: "{{ component.INSTALL_ROOT }}/docker/nginx-proxy/" 
+    services: nginx-proxy
+  register: output
+  tags: 
+    - nginx-lb4-k8s
+    - rke2-cluster-multi
+  when: LB_TYPE == 'nginx'  and "'lb' in group_names"
+
+#--out---
+- debug:
+    var: output
+  tags: 
+    - nginx-lb4-k8s
+    - rke2-cluster-multi
+  when: LB_TYPE == 'nginx' and "'lb' in group_names"
+
+    
+
+#### nginx-proxy service down 
+- name: nginx-lb4-k8s service  uninstall  
+  community.docker.docker_compose:    
+    project_src: "{{ component.INSTALL_ROOT }}/docker/nginx-proxy/" 
+    services: nginx-proxy
+    state: absent
+  register: output
+  tags: 
+    - nginx-lb4-k8s-down
+    - rke2-cluster-multi-delete
+  when: LB_TYPE == 'nginx' and "'lb' in group_names"

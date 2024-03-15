@@ -1,0 +1,7 @@
+---
+
+
+- name: import rke2 multi master setting
+  import_tasks: rke2-multi-master.yml
+
+

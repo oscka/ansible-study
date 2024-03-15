@@ -1,0 +1,7 @@
+LOCAL_USER_HOME: "/home/ska"
+KUBE_CONFIG_PATH: "{{LOCAL_USER_HOME}}/.kube/config"
+
+
+### RKE2######
+RKE2_MASTER_SERVER_TOKEN: "rke2-server-token"
+LB_TYPE: "haproxy"  ## nginx

@@ -1,0 +1,18 @@
+---
+# defaults file for role-k8s-master
+
+########## host info #################
+HOST_IP: "{{ansible_host}}"
+LOCAL_USER_HOME: "/home/ska"
+KUBE_CONFIG_PATH: "{{LOCAL_USER_HOME}}/.kube/k8s/kubeconfig"
+
+LB_TYPE: "haproxy" ## nginx, haproxy
+
+
+############ RKE2 #############
+RKE2_VERSION: "v1.27.11+rke2r1"
+
+### RKE2_MASTER_SERVER_TOKEN 은 worker role에서 사용하기 위해서 external-vars.yml 등록 하자
+RKE2_MASTER_SERVER_TOKEN: "rke2-server-token"
+RKE2_MULTI_LB_IP: "{{hostvars[groups.lb.0].ansible_host}}"
+RKE2_MASTER_MASTER_MASTER1_URL: https://{{RKE2_MULTI_LB_IP}}:9345

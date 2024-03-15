@@ -1,0 +1,41 @@
+
+; [lb]
+; lb-k8s ansible_host=192.168.41.29 ansible_user=vagrant ansible_port=22 ansible_ssh_private_key_file=/home/ska/.ssh/id_rsa
+
+; [masters]
+; ## vm1
+; master1 ansible_host=192.168.41.8 ansible_user=vagrant ansible_port=22 ansible_ssh_private_key_file=/home/ska/.ssh/id_rsa
+; ## vm2
+; master2 ansible_host=192.168.41.9 ansible_user=vagrant ansible_port=22 ansible_ssh_private_key_file=/home/ska/.ssh/id_rsa
+; ## vm3
+; master3 ansible_host=192.168.41.10 ansible_user=vagrant ansible_port=22 ansible_ssh_private_key_file=/home/ska/.ssh/id_rsa
+
+; [workers]
+; ## vm4
+; worker1 ansible_host=192.168.41.13 ansible_user=vagrant ansible_port=22 ansible_ssh_private_key_file=/home/ska/.ssh/id_rsa
+; ; ## vm5
+; worker2 ansible_host=192.168.41.21 ansible_user=vagrant ansible_port=22 ansible_ssh_private_key_file=/home/ska/.ssh/id_rsa
+
+
+
+[all]
+lb-k8s ansible_host=192.168.41.111 ansible_user=vagrant ansible_port=22 ansible_ssh_private_key_file=/home/ska/.ssh/id_rsa
+vm1 ansible_host=192.168.41.112 ansible_user=vagrant ansible_port=22 ansible_ssh_private_key_file=/home/ska/.ssh/id_rsa
+vm2 ansible_host=192.168.41.113 ansible_user=vagrant ansible_port=22 ansible_ssh_private_key_file=/home/ska/.ssh/id_rsa
+vm3 ansible_host=192.168.41.114 ansible_user=vagrant ansible_port=22 ansible_ssh_private_key_file=/home/ska/.ssh/id_rsa
+vm4 ansible_host=192.168.41.115 ansible_user=vagrant ansible_port=22 ansible_ssh_private_key_file=/home/ska/.ssh/id_rsa
+vm5 ansible_host=192.168.41.116 ansible_user=vagrant ansible_port=22 ansible_ssh_private_key_file=/home/ska/.ssh/id_rsa
+
+
+
+[lb]
+lb-k8s 
+
+[masters]
+vm1 
+vm2 
+vm3 
+
+[workers]
+vm4 
+vm5 

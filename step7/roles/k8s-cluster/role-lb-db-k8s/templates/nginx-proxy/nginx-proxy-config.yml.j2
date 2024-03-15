@@ -1,0 +1,26 @@
+
+events {}
+
+stream {
+  upstream k8s_servers {
+{% for h in groups['masters'] %}
+    server {{ hostvars[h].ansible_host }}:6443;
+{% endfor %}   
+  }
+
+  upstream rke2_join_master {
+{% for h in groups['masters'] %}
+    server {{ hostvars[h].ansible_host }}:9345 max_fails=1 fail_timeout=2s;
+{% endfor %}   
+  }
+
+  server {
+    listen 6443;
+    proxy_pass k8s_servers;
+  }
+
+  server {
+    listen 9345;
+    proxy_pass rke2_join_master;
+  }
+}

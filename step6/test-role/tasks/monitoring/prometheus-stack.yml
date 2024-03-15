@@ -1,0 +1,69 @@
+---
+
+
+- name: "install prometheus-stack(install node-exporter,kube-state-metrics, prometheus, grafna)"
+  kubernetes.core.helm:
+    name: prometheus
+    chart_ref: prometheus-community/kube-prometheus-stack
+    chart_version: "{{PROMETHEUS_STACK_CHART_VERSION}}"
+    release_namespace: "{{PROMETHEUS_STACK_NAMESPACE}}"
+    create_namespace: true
+    update_repo_cache: "{{HELM_UPDATE_REPO_CACHE}}"
+    wait: true  
+    values:
+      kubeControllerManager:  
+        service:
+          enabled: "{{PROMETHEUS_STACK_KUBECONTROLLER_MANAGER_ENABLED}}"
+          port: "{{PROMETHEUS_STACK_KUBECONTROLLER_MANAGER_PORT}}"
+          targetPort: "{{PROMETHEUS_STACK_KUBECONTROLLER_MANAGER_TARGETPORT}}"
+      kubeScheduler:  
+        service:
+          enabled: "{{PROMETHEUS_STACK_KUBESCHEDULER_ENABLED}}"
+          port: "{{PROMETHEUS_STACK_KUBESCHEDULER_PORT}}"
+          targetPort: "{{PROMETHEUS_STACK_KUBESCHEDULER_TARGETPORT}}"
+  
+      grafana:
+        adminPassword: "{{PROMETHEUS_STACK_GRAFANA_ADMIN_PASSWORD}}"
+  tags:
+    - prometheus-helm
+    - prometheus-stack
+
+- debug:
+    var: output
+  tags: 
+    - prometheus-stack
+
+- name: " prometheus  ingress 설치 "
+  kubernetes.core.k8s:
+    state: present
+    template: 
+      - path: "prometheus-stack/prometheus-stack-prometheus-ingress.yml.j2"
+  register: output
+  tags: 
+    - prometheus-stack-prometheus-ing
+    - prometheus-stack
+
+- debug:
+    var: output
+  tags: 
+    - prometheus-stack-prometheus-ing
+    - prometheus-stack
+
+## grafana 로그인: admin/prom-operator
+- name: " grafana  ingress 설치 "
+  kubernetes.core.k8s:
+    state: present
+    template: 
+      - path: "prometheus-stack/prometheus-stack-grafana-ingress.yml.j2"
+  register: output
+  tags: 
+    - prometheus-stack-grafana-ing
+    - prometheus-stack
+
+- debug:
+    var: output
+  tags: 
+    - prometheus-stack-grafana-ing
+    - prometheus-stack
+      
+      

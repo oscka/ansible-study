@@ -1,0 +1,8 @@
+---  
+- name: import rke2 master
+  import_tasks: rke2/rke2.yml
+
+
+
+
+

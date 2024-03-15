@@ -1,0 +1,5 @@
+---
+
+
+- name: import rke2-agents-multi-master
+  import_tasks: rke2-agents-multi-master.yml

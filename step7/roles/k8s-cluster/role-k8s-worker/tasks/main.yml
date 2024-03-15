@@ -1,0 +1,9 @@
+---
+
+- name: Pause for 5 seconds 
+  pause:
+    seconds: 6
+
+
+- name: import rke2 agent
+  import_tasks: rke2/rke2-agents.yml

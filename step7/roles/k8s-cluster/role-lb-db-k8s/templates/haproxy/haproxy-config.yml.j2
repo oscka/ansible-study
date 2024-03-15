@@ -1,0 +1,44 @@
+
+global
+    daemon
+    maxconn 256
+
+defaults
+    mode http
+    timeout connect 5000ms
+    timeout client 50000ms
+    timeout server 50000ms
+frontend https-in
+    mode tcp
+    bind *:6443
+    default_backend k8s-masters
+    
+frontend https-in-k8s-join
+    mode tcp
+    bind *:9345
+    default_backend rke2-join-masters
+
+backend k8s-masters
+    mode tcp
+    balance roundrobin
+    option tcp-check
+    option tcplog
+{% for h in groups['masters'] %}
+    server {{h}} {{ hostvars[h].ansible_host }}:6443 check
+{% endfor %} 
+
+backend rke2-join-masters
+    mode tcp
+    balance roundrobin
+    option tcp-check
+    option tcplog
+{% for h in groups['masters'] %}
+    server {{h}} {{ hostvars[h].ansible_host }}:9345 check  inter 2s
+{% endfor %}
+
+frontend stats
+    bind *:8404
+    stats enable
+    stats uri /stats
+    stats refresh 10s
+    stats admin if LOCALHOST

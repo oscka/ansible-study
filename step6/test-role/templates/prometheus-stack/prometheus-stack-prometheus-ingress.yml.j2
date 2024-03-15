@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: prometheus-ingress
+  namespace: {{PROMETHEUS_STACK_NAMESPACE}}
+  annotations:
+    kubernetes.io/ingress.class: {{PROMETHEUS_STACK_INGRESS_CLASS}}    
+spec:
+  rules:
+  - host: {{PROMETHEUS_STACK_PROMETHEUS_INGRESS_HOST}}
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service: 
+            name: prometheus-kube-prometheus-prometheus
+            port: 
+              number: 9090

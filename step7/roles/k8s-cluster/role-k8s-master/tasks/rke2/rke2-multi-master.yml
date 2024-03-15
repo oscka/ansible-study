@@ -1,0 +1,157 @@
+---
+
+###  "rke2 download  "
+- name: "rke2 download "
+  become: true  
+  shell: |   
+    echo "===========download rke2============"
+    curl -sfL https://get.rke2.io | INSTALL_RKE2_VERSION={{RKE2_VERSION}} sh -
+    systemctl enable rke2-server.service    
+  register: output
+  tags: 
+    - rke2-multi-master
+    - rke2-cluster-multi
+
+- debug:
+    var: output
+  tags: 
+    - rke2-multi-master
+    - rke2-cluster-multi
+
+###  "[master-1번에서만] create rke2 config.yaml  "
+- name: "rke2 multi master init cluster 설치 "
+  become: true  
+  shell: |   
+    echo "======== server ip : {{ansible_host}}"
+    mkdir -p /etc/rancher/rke2/
+
+    cat <<EOF > /etc/rancher/rke2/config.yaml
+    token: {{RKE2_MASTER_SERVER_TOKEN}}
+    write-kubeconfig-mode: "0644"
+    tls-san:
+      - {{RKE2_MULTI_LB_IP}}
+      - localhost
+      - {{ansible_host}}
+    etcd-expose-metrics: true
+    EOF
+  register: output
+  tags: 
+    - rke2-multi-master
+    - rke2-cluster-multi
+  when: hostvars[groups.masters.0].ansible_host == HOST_IP 
+
+- debug:
+    var: output
+  tags: 
+    - rke2-multi-master
+    - rke2-cluster-multi
+  when: hostvars[groups.masters.0].ansible_host == HOST_IP 
+
+
+###  "[master-2,3 ] create rke2 config.yaml  "
+- name: "rke2   join follower masters   "
+  become: true  
+  shell: |   
+    echo "======== server ip : {{ansible_host}}"
+    mkdir -p /etc/rancher/rke2/
+
+    cat <<EOF > /etc/rancher/rke2/config.yaml
+    server: {{RKE2_MASTER_MASTER_MASTER1_URL}}
+    token: {{RKE2_MASTER_SERVER_TOKEN}}
+    write-kubeconfig-mode: "0644"
+    tls-san:
+      - {{RKE2_MULTI_LB_IP}}
+      - localhost
+      - {{ansible_host}}
+    etcd-expose-metrics: true
+    EOF
+  register: output
+  tags: 
+    - rke2-multi-master
+    - rke2-cluster-multi
+  when: hostvars[groups.masters.0].ansible_host != HOST_IP 
+
+- debug:
+    var: output
+  tags: 
+    - rke2-multi-master
+    - rke2-cluster-multi
+  when: hostvars[groups.masters.0].ansible_host != HOST_IP 
+
+- name: "rke2-server start "
+  become: true
+  shell: |    
+    echo "=======rke2-server start============"
+    systemctl start rke2-server.service
+    
+  register: output  
+  tags: 
+    - rke2-multi-master
+    - rke2-cluster-multi
+
+
+- name: " copy kubectl user /usr/local/bin "
+  shell: |    
+    echo "=====kubeconfig settings======="
+    mkdir -p ~/.kube/
+    cp /etc/rancher/rke2/rke2.yaml ~/.kube/config
+    sudo cp /var/lib/rancher/rke2/bin/kubectl /usr/local/bin
+    echo 'alias k=kubectl' >>~/.bashrc
+  
+  tags:    
+    - rke2-multi-master
+    - rke2-cluster-multi
+
+
+- name: "rke2 multi master fetch remote kubeconfig"
+  ansible.builtin.fetch:
+    src: "/etc/rancher/rke2/rke2.yaml"
+    dest: "{{KUBE_CONFIG_PATH}}-{{HOST_IP}}.conf"
+    flat: yes
+  # run_once: true   
+  tags: 
+    - rke2-multi-config-fetch
+    - rke2-multi-config
+    - rke2-multi-master
+    - rke2-cluster-multi
+  when: hostvars[groups.masters.0].ansible_host == HOST_IP 
+    
+###############rke2 remote  multi master  kubeconfig to local kube config
+## 
+- name: "rke2 remote  multi master  kubeconfig to local kube config"
+  local_action: shell
+    sed -i 's/127.0.0.1/{{RKE2_MULTI_LB_IP}}/' {{KUBE_CONFIG_PATH}}-{{HOST_IP}}.conf ;
+    sed -i 's/default/rke2-{{ansible_host}}/' {{KUBE_CONFIG_PATH}}-{{HOST_IP}}.conf ;
+    export KUBECONFIG={{KUBE_CONFIG_PATH}} ;
+    kubectl config unset users.rke2-{{ansible_host}} ;
+    kubectl config unset contexts.rke2-{{ansible_host}} ; 
+    kubectl config unset clusters.rke2-{{ansible_host}} ;
+    export KUBECONFIG={{KUBE_CONFIG_PATH}}:{{KUBE_CONFIG_PATH}}-{{HOST_IP}}.conf ; 
+    kubectl config view --flatten >  {{KUBE_CONFIG_PATH}}-tmp ; 
+    rm {{KUBE_CONFIG_PATH}}-{{HOST_IP}}.conf ;
+    mv {{KUBE_CONFIG_PATH}}-tmp {{KUBE_CONFIG_PATH}} ;
+    kubectl config  use-context  rke2-{{ansible_host}} ;
+  tags: 
+    - rke2-multi-config
+    - rke2-multi-master
+    - rke2-cluster-multi
+  when: hostvars[groups.masters.0].ansible_host == HOST_IP 
+
+- name: "=====Wait untill the Object is created"
+  shell: |
+    sleep 60
+  tags: 
+    - rke2-multi-master
+    - rke2-cluster-multi
+  when: hostvars[groups.masters.0].ansible_host == HOST_IP 
+
+######### delete rke2 master ##########
+- name: "rke2  multi master delete"
+  become: true 
+  shell: |
+    rke2-uninstall.sh
+  tags: 
+    - rke2-multi-master-delete
+    - rke2-cluster-multi-delete
+
+

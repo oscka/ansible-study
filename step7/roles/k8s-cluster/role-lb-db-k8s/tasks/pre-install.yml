@@ -1,0 +1,74 @@
+---
+
+- name: Check If Docker Is Installed
+  command: docker --version
+  register: docker_valid
+  ignore_errors: true
+  tags: 
+    - nginx-lb4-k8s-pre
+    - rke2-cluster-multi-pre
+
+
+- name: "docker 설치"
+  shell: |  
+    curl -fsSL https://get.docker.com/ | sudo sh 
+    sudo usermod -a -G docker {{USER_NAME}}
+  tags: 
+    - nginx-lb4-k8s-pre
+    - rke2-cluster-multi-pre
+  when: docker_valid.failed
+    
+
+- name: Start docker 
+  service:
+    name: docker
+    state: restarted
+  become: true
+  tags: 
+    - nginx-lb4-k8s-pre
+    - rke2-cluster-multi-pre
+    
+- name: reset ssh connection to allow user changes to affect 'current login user'
+  meta: reset_connection
+  tags: 
+    - nginx-lb4-k8s-pre
+    - rke2-cluster-multi-pre
+
+- name: docker check  
+  shell: |
+    docker ps 
+  register: output
+  tags: 
+    - nginx-lb4-k8s-pre
+    - rke2-cluster-multi-pre
+   
+     
+
+#--[output]--
+- debug:
+    var: output
+  tags: 
+    - nginx-lb4-k8s-pre
+    - rke2-cluster-multi-pre
+    
+- name: Check If docker-compose Is Installed
+  command: docker-compose --version
+  register: docker_compose_valid
+  ignore_errors: true
+  tags: 
+    - nginx-lb4-k8s-pre
+    - rke2-cluster-multi-pre
+
+- name: "docker-compose 설치"
+  shell: |
+    sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose 
+    sudo chmod +x /usr/local/bin/docker-compose 
+  tags: 
+    - nginx-lb4-k8s-pre
+    - rke2-cluster-multi-pre
+  when: docker_compose_valid.failed
+    
+
+
+
+    

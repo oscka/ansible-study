@@ -1,0 +1,10 @@
+---
+# defaults file for role-k8s-worker
+
+### RKE2 ##########
+RKE2_MASTER_SERVER_TOKEN: "rke2-server-token"
+
+RKE2_VERSION: "v1.27.11+rke2r1"
+
+RKE2_MULTI_LB_IP: "{{hostvars[groups.lb.0].ansible_host}}"
+RKE2_AGENT_MULTI_MASTER_URL: https://{{RKE2_MULTI_LB_IP}}:9345
