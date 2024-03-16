@@ -20,18 +20,12 @@
 - worker1: 192.168.21.13
 - worker2: 192.168.21.21
 
-
-
-
-
 ## 2. multi-master
 ---
 ### 3.1 설치 
   - 설치 TAG : rke2-pre, rke2-cluster-multi-pre,  rke2-cluster-multi  
 
 sh run-vm-rke2-cluster.sh "rke2-pre, rke2-cluster-multi-pre,  rke2-cluster-multi"
-
-
 
 ### 3.2  개별 tag
 - lb: rke2-cluster-multi-pre,  haproxy-lb4-k8s
