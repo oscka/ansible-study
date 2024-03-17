@@ -19,7 +19,7 @@
 로컬 테스트를 위해 다음과 같은 사항이 필요합니다.
 - Vagrant, VirtualBox(KVM,Hyper-V 등등) 기반의 2개 가상머진(VM) 구동 필요
 - install 서버 : ansible 설치 필요 
-- target 서버: vagrant를 통해 구동된 서버에 ssh키/password 없이 접속할 수 있어야 함
+- target 서버: vagrant를 통해 구동된 서버에 ssh키/password 없이 접속할 수 있어야 함(install서버 -> target서버)
 
 vagrant로 구동한 경우 기본적으로 vagrant 계정으로 sudo 권한으로 접근이 가능하고 ssh권한을 부여하여 주지만, 그렇지 않을 경우 다음과 같은 작업이 필요(단순히 vagrant를 이용해 로컬에서 가상머신을 생성한 경우 필요 없는 작업들임)
 
@@ -105,6 +105,8 @@ LOCAL_USER_HOME: "/home/계정명"
 ```
 
 #### sed 옵션 수정
+
+mac과 linux에서 sed명령의 parameter가 달라 환경에 따라 수정해야 합니다.
 
 ```yaml
 ## dev-k3s.yml 파일의 내용을 수정
